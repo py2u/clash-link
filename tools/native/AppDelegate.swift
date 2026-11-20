@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     private var startedBackend = false
     private var port: Int = 8788
     private var statusItem: NSStatusItem?
+    private var speedTimer: Timer?
     private var tunMenuItem: NSMenuItem?
     private var modeItems: [NSMenuItem] = []
     private var statusTimer: Timer?
@@ -152,19 +153,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     // MARK: - 菜单栏
 
     private func buildStatusBar() {
-        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
-            let image = NSImage(systemSymbolName: "shield.lefthalf.filled", accessibilityDescription: "Clash Link")
-                ?? NSImage(named: NSImage.applicationIconName)
-            if let image = image {
-                image.isTemplate = true
-                image.size = NSSize(width: 17, height: 17)
-                button.image = image
-            } else {
-                button.title = "CL"
-            }
-            button.toolTip = "Clash Link"
-            NSLog("ClashLink status item ready: \(button.image != nil ? "image" : "text")")
+            button.title = "↓0B ↑0B"
+            button.font = NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .regular)
+            button.toolTip = "Clash Link 实时流量"
         }
         let menu = NSMenu()
         menu.addItem(withTitle: "打开控制台", action: #selector(showConsole), keyEquivalent: "").target = self
@@ -187,9 +180,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         menu.addItem(withTitle: "修复网络", action: #selector(repairNetwork), keyEquivalent: "").target = self
         menu.addItem(.separator())
         menu.addItem(withTitle: "退出 Clash Link", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        item.menu = menu
         statusItem = item
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            item.isVisible = true
+            item.button?.title = "↓0B ↑0B"
+        }
+        item.menu = menu
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
             let frame = item.button?.window?.frame ?? .zero
             try? "created=1 image=\(item.button?.image != nil) visible=\(item.isVisible) frame=\(frame)".write(
                 toFile: "/tmp/clashlink-status.txt", atomically: true, encoding: .utf8)
@@ -197,7 +194,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         statusTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
             self?.refreshStatus()
         }
+        speedTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            self?.refreshSpeed()
+        }
         refreshStatus()
+        refreshSpeed()
+    }
+
+    private func refreshSpeed() {
+        guard let data = requestJSON("/api/traffic"),
+              let samples = data["samples"] as? [[String: Any]],
+              let last = samples.last else { return }
+        let down = (last["down"] as? NSNumber)?.doubleValue ?? 0
+        let up = (last["up"] as? NSNumber)?.doubleValue ?? 0
+        statusItem?.button?.title = "↓\(speedText(down)) ↑\(speedText(up))"
+    }
+
+    private func speedText(_ bytes: Double) -> String {
+        if bytes >= 1024 * 1024 { return String(format: "%.1fM", bytes / 1024 / 1024) }
+        if bytes >= 1024 { return String(format: "%.0fK", bytes / 1024) }
+        return String(format: "%.0fB", bytes)
     }
 
     @objc private func showConsole() {

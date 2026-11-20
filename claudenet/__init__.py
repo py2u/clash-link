@@ -5,7 +5,7 @@ import os
 纯标准库实现，支持 macOS / Linux，附带本地网页控制台。
 """
 
-__version__ = "0.0.11"
+__version__ = "0.0.14"
 __app_name__ = "clashlink"
 __display_name__ = "Clash Link"
 
