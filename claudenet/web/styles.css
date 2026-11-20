@@ -1666,3 +1666,10 @@ body, button, input, select, textarea, .card, .nav-item, .btn {
 .client-actions .client-route { width: 150px; height: 32px; }
 #env-launch { min-width: 240px; flex: 0 0 auto; }
 .env-control select { min-width: 200px; }
+
+/* 对齐 ClaudeLink DESIGN.md：系统字体（macOS 上 SF Pro + 苹方回退），标题 28/700、小节 19/600 */
+html, body, .app, .content {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+    "Helvetica Neue", "Microsoft YaHei UI", sans-serif;
+}
+#page-title, .page-title h1, .page-head h1 { font-family: inherit !important; font-weight: 700 !important; }
