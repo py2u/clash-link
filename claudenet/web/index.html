@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clash Link · 海外 AI 网络体检</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23d97757'/%3E%3Cpath d='M16 7l7 3v5c0 4.4-3 8.2-7 9-4-.8-7-4.6-7-9V10l7-3z' fill='none' stroke='%23fff' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M12.5 16l2.5 2.5 4.5-4.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/styles.css?v=__VER__" />
+  <script>
+    (function () {
+      try {
+        var q = new URLSearchParams(location.search).get("theme");
+        var mode = q || localStorage.getItem("claudenet.theme") || "dark";
+        var dark = mode === "dark" || (mode === "auto" && !matchMedia("(prefers-color-scheme: light)").matches);
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        document.documentElement.dataset.themeMode = mode;
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+<div class="progress" id="progress-bar"><span></span></div>
+<div class="offline" id="offline" hidden>控制台连接已断开，请确认应用仍在运行。</div>
+
+<svg class="sprite" aria-hidden="true">
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.4-3 8.2-7 9-4-.8-7-4.6-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.5 6.8a8 8 0 1 0 11 0"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6l1-7z"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 15.2a8.2 8.2 0 1 1 16 0"/><path d="M12 15.2l4.6-5.4"/><circle cx="12" cy="15.2" r="1.5"/></symbol>
+  <symbol id="i-test" viewBox="0 0 24 24"><path d="M12 3l7 3v5.2c0 4.3-2.9 8-7 9-4.1-1-7-4.7-7-9V6l7-3z"/><path d="M9.2 12.2l2 2 3.8-4"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.4 2.3 3.6 5.3 3.6 8.5S14.4 18.2 12 20.5c-2.4-2.3-3.6-5.3-3.6-8.5S9.6 5.8 12 3.5z"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6.6" rx="7" ry="2.9"/><path d="M5 6.6v10.8c0 1.6 3.1 2.9 7 2.9s7-1.3 7-2.9V6.6"/><path d="M5 12c0 1.6 3.1 2.9 7 2.9s7-1.3 7-2.9"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.4"/><path d="M8.4 18h3.1a3 3 0 0 0 3-3V9a3 3 0 0 1 3-3h1.7"/><path d="M17 3.6l3 2.4-3 2.4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 13.5l1.7 1-1.6 2.8-1.9-.7a6.9 6.9 0 0 1-1.7 1l-.3 2h-3.2l-.3-2a6.9 6.9 0 0 1-1.7-1l-1.9.7-1.6-2.8 1.7-1a7 7 0 0 1 0-2l-1.7-1 1.6-2.8 1.9.7a6.9 6.9 0 0 1 1.7-1l.3-2h3.2l.3 2a6.9 6.9 0 0 1 1.7 1l1.9-.7 1.6 2.8-1.7 1a7 7 0 0 1 0 2z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8"/></symbol>
+  <symbol id="i-network" viewBox="0 0 24 24"><circle cx="12" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M10.6 8.1 7.3 15.8M13.4 8.1l3.3 7.7M8.4 18h7.2"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 0 1-7.5 7.5"/><path d="M12 19.5l-2.6-2.6M12 19.5l2.6-2.6"/><path d="M4.5 12A7.5 7.5 0 0 1 12 4.5"/><path d="M12 4.5L9.4 7.1M12 4.5l2.6 2.6"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h5M15 7h5"/><circle cx="12" cy="7" r="2.2"/><path d="M4 12h9M19 12h1"/><circle cx="16" cy="12" r="2.2"/><path d="M4 17h3M13 17h7"/><circle cx="10" cy="17" r="2.2"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><rect x="4" y="4.5" width="16" height="15" rx="2.4"/><path d="M8 9.5h8M8 13h8M8 16.5h5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5s1.2-6.2 3.6-8.5z"/></symbol>
+  <symbol id="i-theme" viewBox="0 0 24 24"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a8.6 8.6 0 1 0 11 11z"/></symbol>
+
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="side-brand">
+      <div class="mark"><svg viewBox="0 0 1024 1024" class="mark-icon">
+        <rect x="52" y="52" width="920" height="920" rx="208" fill="#1b1c1e"/>
+        <path d="M512 786 C 366 786 288 664 288 538 L 288 372 L 426 476 C 478 436 546 436 598 476 L 736 372 L 736 538 C 736 664 658 786 512 786 Z" fill="#e08d6e"/>
+        <path d="M436 626 L 512 512 L 588 626" fill="none" stroke="#f7f5f2" stroke-width="66" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="512" cy="676" r="30" fill="#f7f5f2"/>
+      </svg></div>
+      <div class="side-brand-text"><strong>Clash Link</strong></div>
+    </div>
+    <nav class="side-nav" id="side-nav">
+      <button class="nav-item active" data-view="home" type="button"><svg><use href="#i-grid"/></svg><span>主页</span></button>
+      <button class="nav-item" data-view="desk" type="button"><svg><use href="#i-test"/></svg><span>测试</span></button>
+      <button class="nav-item" data-view="proxy" type="button"><svg><use href="#i-globe"/></svg><span>连接</span></button>
+      <button class="nav-item" data-view="subs" type="button"><svg><use href="#i-db"/></svg><span>订阅</span></button>
+      <button class="nav-item" data-view="rules" type="button"><svg><use href="#i-route"/></svg><span>规则</span></button>
+      <button class="nav-item" data-view="history" type="button"><svg><use href="#i-log"/></svg><span>日志</span></button>
+      <button class="nav-item" data-view="env" type="button"><svg><use href="#i-gear"/></svg><span>设置</span></button>
+    </nav>
+    <div class="side-foot">
+      <div class="side-kernel" id="side-kernel">内核未运行</div>
+      <div class="side-version" id="side-version">—</div>
+    </div>
+  </aside>
+
+  <div class="content">
+<header class="topbar">
+  <div class="page-title">
+    <h1 id="page-title">首页</h1>
+    <p id="page-sub">选择节点，准备网络并打开 Claude。</p>
+  </div>
+  <div class="head-actions">
+    <span class="pill idle" id="live-pill"><i></i><span id="pill-text">待检测</span></span>
+  </div>
+</header>
+
+    <main class="views">
+      <section class="view" data-view="home">
+        <div class="repair-banner" id="repair-banner" hidden>
+          <div><strong>上次操作没有成功</strong><em id="repair-text"></em></div>
+          <button class="btn primary small" id="btn-repair" type="button"><svg><use href="#i-refresh"/></svg><span>一键修复</span></button>
+        </div>
+          <section class="card session-card">
+          <header class="session-head">
+            <div class="session-copy">
+              <h2 class="session-title" id="session-title">准备一次工作会话</h2>
+              <p class="session-desc" id="session-sub">官方桌面客户端使用 TUN；也可以只走内核的混合端口代理。</p>
+            </div>
+            <span class="session-state" id="session-state" data-state="idle">未连接</span>
+          </header>
+          <div class="session-field">
+            <span class="field-label">使用节点</span>
+            <div class="field-row">
+              <select id="desk-node"></select>
+              <button class="btn subtle small" id="btn-desk-test" type="button">
+                <svg><use href="#i-refresh"/></svg><span>测速</span>
+              </button>
+              <button class="btn primary small" id="btn-desk-subs" type="button">
+                <svg><use href="#i-plus"/></svg><span>添加节点</span>
+              </button>
+            </div>
+          </div>
+          <div class="session-field">
+            <span class="field-label">AI 客户端</span>
+            <div class="field-row">
+              <select id="desk-client"></select>
+              <button class="btn subtle small" id="btn-desk-client-new" type="button"><span>管理客户端</span></button>
+            </div>
+          </div>
+          <div class="session-field">
+            <span class="field-label">项目文件夹</span>
+            <div class="field-row">
+              <input class="field-input" id="desk-project" type="text" readonly placeholder="/Users/…/Documents/your-project" />
+              <button class="btn subtle small" id="btn-browse" type="button"><span>浏览…</span></button>
+            </div>
+          </div>
+          <div class="session-field">
+            <label class="session-check">
+              <input type="checkbox" id="desk-proxy" />
+              <span>TUN 虚拟网卡</span>
+            </label>
+            <p class="field-hint">桌面客户端需要 TUN；已启用免密接管时不会弹授权。</p>
+          </div>
+          <div class="session-actions">
+            <button class="btn primary" id="btn-connect-open" type="button">
+              <svg><use href="#i-bolt"/></svg><span>准备并打开 Claude 桌面客户端</span>
+            </button>
+            <button class="btn" id="btn-connect" type="button">
+              <svg><use href="#i-refresh"/></svg><span>连接并检测</span>
+            </button>
+            <button class="btn" id="btn-disconnect" type="button">
+              <svg><use href="#i-power"/></svg><span>断开</span>
+            </button>
+            <span class="desk-hint">连接后自动检测当前出口，约 5–10 秒</span>
+          </div>
+        </section>
+
+        <section class="card home-summary">
+          <div class="home-summary-main">
+            <span class="eyebrow"><svg><use href="#i-test"/></svg><span>上次体检</span></span>
+            <h2 id="home-score">尚未检测</h2>
+            <p id="home-line" class="home-line">准备好网络后，点「测试」跑一次完整体检。</p>
+          </div>
+          <div class="home-summary-actions">
+            <button class="btn subtle small" id="btn-home-rules" type="button"><span>查看规则</span></button>
+            <button class="btn primary small" id="btn-home-test" type="button"><span>去测试</span></button>
+          </div>
+        </section>
+
+        <section class="card client-card">
+          <h2 class="env-title">AI 客户端</h2>
+          <div class="client-list" id="client-list"></div>
+          <div class="client-form">
+            <input class="env-input" id="client-name" placeholder="名称，如 ChatGPT 桌面" />
+            <select class="env-input" id="client-kind">
+              <option value="desktop">桌面应用</option>
+              <option value="cli">命令行</option>
+              <option value="url">网页</option>
+              <option value="proxy">仅准备网络</option>
+            </select>
+            <input class="env-input env-input-wide" id="client-target" placeholder="应用名 / 命令 / 网址，如 Claude、claude、https://chatgpt.com/" />
+            <button class="btn primary small" id="btn-client-add" type="button"><span>添加</span></button>
+          </div>
+          <p class="field-hint">主页会列出这些客户端，点「准备并打开」时启动选中的那个。</p>
+        </section>
+
+
+      </section>
+
+      <section class="view" data-view="desk">
+
+        <div class="card node-card" id="node-card">
+          <div class="node-top">
+            <span class="flag" id="node-flag">🌐</span>
+            <div class="node-name">
+              <div class="node-country" id="node-country">出口节点</div>
+              <div class="node-city" id="node-city">等待检测</div>
+            </div>
+            <span class="chip" id="node-colo" hidden></span>
+          </div>
+          <dl class="kv">
+            <div><dt>出口 IP</dt><dd id="node-ip">—</dd></div>
+            <div><dt>ASN</dt><dd id="node-asn" title="">—</dd></div>
+            <div><dt>代理</dt><dd id="node-proxy">—</dd></div>
+            <div><dt>边缘节点</dt><dd id="node-edge">—</dd></div>
+          </dl>
+        </div>
+
+        <section class="card tz-card" id="tz-card">
+    <div class="tz-head">
+      <div class="tz-heading">
+        <div class="eyebrow"><svg class="ico"><use href="#i-clock"/></svg>时区一致性</div>
+        <h3 id="tz-title">正在比对系统时区与出口时区…</h3>
+        <p id="tz-note"></p>
+      </div>
+    </div>
+    <div class="tz-body">
+      <div class="tz-side">
+        <span class="tz-tag">系统</span>
+        <strong id="tz-system">—</strong>
+        <em><span id="tz-system-clock">--:--</span> <span id="tz-system-date"></span></em>
+      </div>
+      <div class="tz-arrow" id="tz-arrow">→</div>
+      <div class="tz-side">
+        <span class="tz-tag">出口</span>
+        <strong id="tz-exit">—</strong>
+        <em><span id="tz-exit-clock">--:--</span> <span id="tz-exit-date"></span></em>
+      </div>
+      <div class="tz-actions">
+        <button class="btn primary" id="btn-sync" disabled>
+          <svg><use href="#i-bolt"/></svg><span>一键同步时区</span>
+        </button>
+        <button class="btn subtle" id="btn-copy" disabled>
+          <svg><use href="#i-copy"/></svg><span>复制命令</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+<div class="tiles">
+          <div class="tile"><span>本地代理</span><strong id="tile-proxy">—</strong><em id="tile-proxy-sub"></em></div>
+          <div class="tile"><span>连接模式</span><strong id="tile-mode">—</strong><em id="tile-mode-sub"></em></div>
+          <div class="tile"><span>API 连通性</span><strong id="tile-api">—</strong><em id="tile-api-sub"></em></div>
+        </div>
+
+    <section class="card checks-card" data-collapsed="1">
+      <header class="checks-head">
+        <div>
+          <div class="eyebrow"><svg class="ico"><use href="#i-shield"/></svg>启动前检查</div>
+          <h3 id="checks-summary">等待检测</h3>
+        </div>
+        <div class="checks-actions">
+          <a class="link-quiet" id="link-requirements" href="https://support.anthropic.com/en/articles/8461763-where-can-i-access-claude" target="_blank" rel="noreferrer">官方网络要求</a>
+          <button class="btn subtle small" id="btn-browser-check" type="button"><span>浏览器核对</span></button>
+          <button class="btn subtle small" id="btn-scan" type="button">
+            <svg><use href="#i-refresh"/></svg><span>重新检测</span>
+          </button>
+          <button class="btn subtle small" id="btn-checks" type="button">展开 13 项</button>
+        </div>
+      </header>
+      <section class="hero">
+    <div class="card verdict-card" id="verdict-card">
+      <div class="ring" id="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="ring-track" cx="60" cy="60" r="54"></circle>
+          <circle class="ring-value" id="ring-fg" cx="60" cy="60" r="54"></circle>
+        </svg>
+        <div class="ring-center">
+          <span id="score">--</span>
+          <small>分</small>
+        </div>
+      </div>
+      <div class="verdict-copy" aria-live="polite">
+        <div class="eyebrow" id="verdict-eyebrow">体检结果</div>
+        <h2 id="verdict-title">正在检测网络环境…</h2>
+        <p id="verdict-sub">首次检测约需 5–10 秒</p>
+        <div class="scan-meta" id="scan-meta"></div>
+      </div>
+    </div>
+
+  </section>
+
+      <section class="checks" id="checks" data-collapsed="1" aria-live="polite"></section>
+    </section>
+      </section>
+
+      <section class="view" data-view="proxy" hidden>
+        <div class="card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-sliders"/></svg><span>运行模式</span></div>
+          </div>
+          <div class="mode-row" id="mode-row">
+            <button class="mode-btn" data-mode="rule" type="button"><strong>规则</strong><em>按规则分流，日常用这个</em></button>
+            <button class="mode-btn" data-mode="global" type="button"><strong>全局</strong><em>所有流量都走代理</em></button>
+            <button class="mode-btn" data-mode="direct" type="button"><strong>直连</strong><em>全部不走代理</em></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-network"/></svg><span>代理组</span></div>
+            <span class="nodes-meta" id="proxy-groups-meta">—</span>
+          </div>
+          <div class="proxy-groups" id="proxy-groups"></div>
+        </div>
+
+        <div class="card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-bolt"/></svg><span>实时流量</span></div>
+            <span class="nodes-meta" id="traffic-total">—</span>
+          </div>
+          <div class="traffic-row">
+            <div class="traffic-num down"><span id="traffic-down">0 B/s</span><em>↓ 下行</em></div>
+            <div class="traffic-num up"><span id="traffic-up">0 B/s</span><em>↑ 上行</em></div>
+          </div>
+          <svg class="traffic-chart" id="traffic-chart" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true">
+            <polyline id="t-down" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/>
+            <polyline id="t-up" fill="none" stroke="#d97757" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="card">
+          <div class="tabs" id="proxy-tabs">
+            <button class="tab active" data-tab="conn" type="button">连接</button>
+            <button class="tab" data-tab="log" type="button">日志</button>
+            <span class="tabs-spacer"></span>
+            <button class="btn subtle small" id="btn-close-all" type="button">断开全部</button>
+          </div>
+          <div class="tab-panel" id="tab-conn">
+            <div class="tabs-tools">
+              <input class="env-input tabs-search" id="conn-search" type="search" placeholder="搜索域名 / 规则 / 链路">
+              <select class="env-input tabs-select" id="conn-sort">
+                <option value="recent">最近使用</option>
+                <option value="down">按下载</option>
+                <option value="up">按上传</option>
+              </select>
+            </div>
+            <div class="conn-head"><span id="conn-count">0 条连接</span><span id="conn-traffic"></span></div>
+            <div class="conn-list" id="conn-list"></div>
+          </div>
+          <div class="tab-panel" id="tab-log" hidden>
+            <div class="tabs-tools">
+              <input class="env-input tabs-search" id="log-search" type="search" placeholder="搜索日志内容">
+              <select class="env-input tabs-select" id="log-level">
+                <option value="all">全部级别</option>
+                <option value="warning">warning</option>
+                <option value="error">error</option>
+                <option value="info">info</option>
+                <option value="debug">debug</option>
+              </select>
+              <button class="btn subtle small" id="btn-log-export" type="button">导出日志</button>
+            </div>
+            <div class="log-list" id="log-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" data-view="rules" hidden>
+        <div class="card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-log"/></svg><span>规则</span></div>
+            <span class="nodes-meta" id="rules-meta">—</span>
+          </div>
+          <div class="rules-toolbar">
+            <input class="env-input rules-search" id="rules-search" type="search" placeholder="搜索域名、IP、规则类型或策略">
+            <button class="btn subtle small" id="btn-rules-reload" type="button">重新载入配置</button>
+          </div>
+          <div class="rules-list" id="rules-list"></div>
+          <div class="rules-actions">
+            <input class="env-input rules-test" id="rule-test-input" type="text" placeholder="输入域名或 IP，测试会命中哪条规则">
+            <button class="btn primary small" id="btn-rule-test" type="button">测试命中</button>
+          </div>
+          <p class="hint" id="rule-test-result">按当前规则从上到下匹配，支持 DOMAIN / SUFFIX / KEYWORD / IP-CIDR / RULE-SET / MATCH。</p>
+        </div>
+
+        <div class="card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-sync"/></svg><span>规则集</span></div>
+            <span class="nodes-meta" id="providers-meta">—</span>
+          </div>
+          <div class="rules-list" id="providers-list"></div>
+          <div class="rules-actions">
+            <span class="hint">远程规则集，更新会重新下载内容</span>
+            <button class="btn subtle small" id="btn-providers-update" type="button">全部更新</button>
+          </div>
+          <textarea class="rules-editor" id="providers-editor" spellcheck="false" placeholder="自定义规则集，每行：名称 行为 URL&#10;my-list domain https://example.com/rules.yaml"></textarea>
+          <div class="rules-actions">
+            <span class="hint">行为可选 domain / ipcidr / classical；保存后热重载</span>
+            <button class="btn primary small" id="btn-providers-save" type="button">保存规则集</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-bolt"/></svg><span>自定义规则</span></div>
+            <span class="nodes-meta">写在 rules 顶部，优先于订阅规则</span>
+          </div>
+          <textarea class="rules-editor" id="rules-editor" spellcheck="false" placeholder="DOMAIN-SUFFIX,openai.com,PROXY&#10;IP-CIDR,10.0.0.0/8,DIRECT"></textarea>
+          <div class="rules-actions">
+            <span class="hint">保存后热重载，不重启内核；格式：类型,内容[,策略]</span>
+            <button class="btn primary small" id="btn-rules-save" type="button">保存并应用</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" data-view="subs" hidden>
+  <section class="card subs-card">
+    <header class="subs-toolbar">
+      <div class="subs-actions">
+        <button class="btn primary small" id="btn-sub-add" type="button">添加订阅</button>
+        <button class="btn subtle small" id="btn-sub-update" type="button">更新选中</button>
+        <button class="btn subtle small" id="btn-sub-edit" type="button">编辑</button>
+        <button class="btn subtle small" id="btn-sub-delete" type="button">删除订阅</button>
+      </div>
+      <div class="subs-chip-row">
+        <span class="sub-chip" id="core-chip">内核未运行</span>
+        <select class="env-input subs-auto" id="sub-auto" title="订阅自动更新">
+          <option value="0">不自动更新</option>
+          <option value="6">每 6 小时</option>
+          <option value="12">每 12 小时</option>
+          <option value="24">每天</option>
+        </select>
+        <button class="btn subtle small" id="btn-core-stop" type="button" hidden>停止内核</button>
+      </div>
+    </header>
+    <form class="sub-form" id="sub-form" hidden>
+      <input class="sub-input" id="sub-url" type="url" placeholder="https://…/api/v1/client/subscribe?token=…" autocomplete="off" spellcheck="false">
+      <button class="btn primary small" id="btn-sub-add-confirm" type="submit">添加</button>
+    </form>
+    <p class="sub-error" id="sub-error" hidden></p>
+    <div class="sub-list" id="sub-list"></div>
+    <p class="subs-foot" id="subs-foot">流量由服务商提供，未提供时保留未知。地址与凭据在本机保存。</p>
+    <label class="session-check sub-tun">
+      <input type="checkbox" id="tun-mode" />
+      <span>TUN 模式：创建虚拟网卡接管整机流量（开启后系统代理可以关掉）</span>
+    </label>
+    <div class="sub-foot">
+      <button class="btn subtle small" id="btn-sysproxy" type="button" hidden>接管系统代理</button>
+      <span class="sub-foot-note" id="sysproxy-note"></span>
+    </div>
+  <section class="card nodes-card" id="nodes-card">
+    <div class="nodes-head">
+      <div class="nodes-eyebrow">
+        <svg><use href="#i-network"/></svg><span>节点管理</span>
+        <em id="nodes-meta"></em>
+      </div>
+      <div class="nodes-controls">
+        <div class="group-tabs" id="node-groups" role="tablist"></div>
+        <button class="btn subtle small" id="btn-fastest" type="button" title="切到当前最快的节点">
+          <svg><use href="#i-bolt"/></svg><span>切到最快</span>
+        </button>
+        <button class="btn subtle small" id="btn-test-nodes" type="button">
+          <svg><use href="#i-refresh"/></svg><span>测速</span>
+        </button>
+      </div>
+    </div>
+    <div class="node-tools">
+      <input class="node-search" id="node-search" type="search" placeholder="搜索节点或地区" autocomplete="off" />
+      <button class="node-fav-filter" id="btn-fav-only" type="button">★ 收藏</button>
+      <select class="node-sort" id="node-sort">
+        <option value="default">默认顺序</option>
+        <option value="delay">按延迟</option>
+        <option value="name">按名称</option>
+        <option value="region">按地区</option>
+      </select>
+    </div>
+    <div class="nodes-now">
+      <span class="nodes-now-label">当前</span>
+      <strong id="node-now">—</strong>
+      <span class="node-delay" id="node-now-delay">—</span>
+      <span class="nodes-tip">点击节点即切换；刚测过速时直接复用延迟，不再重复测</span>
+    </div>
+    <p class="nodes-warn" id="nodes-warn" hidden></p>
+    <div class="node-list" id="node-list"></div>
+    <p class="nodes-note">延迟已统一校正（unified-delay，扣除各协议握手差异），可直接和 Clash Verge 的数字对比；实际 claude.ai 首字节约 0.4–0.5 s，连接复用后更快。</p>
+  </section>
+  <section class="card nodes-help" id="nodes-help" hidden>
+    <div class="nodes-eyebrow">
+      <svg><use href="#i-network"/></svg><span>节点管理</span>
+    </div>
+    <p class="nodes-help-text" id="nodes-help-text"></p>
+    <div class="nodes-help-actions">
+      <button class="btn subtle small" id="btn-nodes-retry" type="button">
+        <svg><use href="#i-refresh"/></svg><span>重新连接</span>
+      </button>
+    </div>
+  </section>
+      
+      </section>
+
+      </section>
+
+
+
+      <section class="view" data-view="env" hidden>
+        <section class="card env-card">
+          <h2 class="env-title">连接与客户端</h2>
+          <div class="env-row">
+            <div class="env-label"><strong>本地混合端口</strong></div>
+            <div class="env-control">
+              <input class="env-input" id="env-port" type="number" min="1024" max="65535" step="1" value="7899" />
+            </div>
+          </div>
+          <p class="env-hint">仅监听 127.0.0.1，不修改 macOS 系统代理。</p>
+          <div class="env-row">
+            <div class="env-label"><strong>启动方式</strong></div>
+            <div class="env-control">
+              <select class="env-select" id="env-launch-mode">
+                <option value="desktop">官方 Claude 桌面客户端</option>
+                <option value="cli">Claude Code CLI（终端）</option>
+                <option value="proxy">仅准备网络</option>
+              </select>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>Claude 桌面应用</strong></div>
+            <div class="env-control">
+              <input class="env-input env-input-wide" id="env-app-path" type="text" placeholder="留空自动查找 Claude.app" />
+              <button class="btn subtle small" id="btn-pick-app" type="button"><span>浏览…</span></button>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>CLI 可执行文件</strong></div>
+            <div class="env-control">
+              <input class="env-input env-input-wide" id="env-cli-path" type="text" placeholder="留空自动查找 claude" />
+              <button class="btn subtle small" id="btn-pick-cli" type="button"><span>浏览…</span></button>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>进程与核对浏览器语言</strong></div>
+            <div class="env-control">
+              <select class="env-select" id="env-locale">
+                <option value="zh-CN">zh-CN</option>
+                <option value="zh-TW">zh-TW</option>
+                <option value="en-US">en-US</option>
+                <option value="ja-JP">ja-JP</option>
+              </select>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>核对浏览器</strong></div>
+            <div class="env-control">
+              <select class="env-select" id="env-browser">
+                <option value="auto">自动（优先 Chrome）</option>
+                <option value="chrome">Google Chrome</option>
+                <option value="safari">Safari</option>
+                <option value="edge">Microsoft Edge</option>
+              </select>
+            </div>
+          </div>
+          <p class="env-hint">语言与浏览器用于「浏览器核对」打开的窗口，以及 CLI 模式启动时的 LANG；界面语言可在「设置 → 维护」里单独切换。</p>
+        </section>
+
+        <section class="card env-card">
+          <h2 class="env-title">临时系统环境</h2>
+          <label class="env-check"><input type="checkbox" id="env-ipv6" /><span>本次临时关闭活动物理网络的 IPv6</span></label>
+          <label class="env-check"><input type="checkbox" id="env-follow-tz" /><span>出口验证后临时匹配 macOS 系统时区</span></label>
+          <p class="env-hint">需要 TUN 时才有意义。修改前记录原状态，断开或退出时恢复；不支持自动恢复的 IPv6 配置会在修改前停止。</p>
+          <label class="env-check"><input type="checkbox" id="env-strict" /><span>自定义严格预检</span></label>
+          <p class="env-hint">兼容预检，不是官方封号要求：三个 IPv4 出口一致、参考地区为 US、TUN 启用、IPv6 关闭、系统时区匹配以及网页可达。地区结果仅供参考。</p>
+          <button class="btn primary small" id="btn-env-save" type="button"><span>保存设置</span></button>
+        </section>
+
+        <section class="card env-card">
+          <h2 class="env-title">DNS</h2>
+          <div class="env-row">
+            <div class="env-label"><strong>启用 DNS 覆写</strong><em>TUN 模式下强制启用（防 DNS 泄漏）；关闭仅影响非 TUN 场景</em></div>
+            <div class="env-control"><label class="env-check"><input type="checkbox" id="env-dns-enabled" /><span>启用</span></label></div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>解析模式</strong><em>fake-ip 适合 TUN；redir-host 兼容性更好</em></div>
+            <div class="env-control">
+              <select class="env-input" id="env-dns-mode">
+                <option value="fake-ip">fake-ip</option>
+                <option value="redir-host">redir-host</option>
+                <option value="normal">normal</option>
+              </select>
+            </div>
+          </div>
+          <div class="dns-grid">
+            <label class="dns-field"><span>主 DNS（每行一个）</span>
+              <textarea class="rules-editor dns-editor" id="env-dns-nameserver" spellcheck="false"></textarea>
+            </label>
+            <label class="dns-field"><span>Fallback（可选）</span>
+              <textarea class="rules-editor dns-editor" id="env-dns-fallback" spellcheck="false"></textarea>
+            </label>
+            <label class="dns-field"><span>fake-ip-filter（可选）</span>
+              <textarea class="rules-editor dns-editor" id="env-dns-filter" spellcheck="false"></textarea>
+            </label>
+          </div>
+          <div class="rules-actions">
+            <span class="hint">保存后热重载配置，不重启内核</span>
+            <button class="btn primary small" id="btn-dns-save" type="button">保存 DNS</button>
+          </div>
+        </section>
+
+        <section class="card env-card">
+          <h2 class="env-title">内核</h2>
+          <div class="env-row">
+            <div class="env-label"><strong>允许局域网连接</strong><em>手机或其它设备可通过本机端口上网</em></div>
+            <div class="env-control"><label class="env-check"><input type="checkbox" id="env-allow-lan" /><span>允许</span></label></div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>IPv6</strong><em>开启后内核会解析并使用 IPv6</em></div>
+            <div class="env-control"><label class="env-check"><input type="checkbox" id="env-kernel-ipv6" /><span>开启</span></label></div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>日志级别</strong><em>影响「代理 → 日志」的详细程度</em></div>
+            <div class="env-control">
+              <select class="env-input" id="env-log-level">
+                <option value="info">info</option>
+                <option value="warning">warning</option>
+                <option value="error">error</option>
+                <option value="debug">debug</option>
+              </select>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>内核版本</strong><em>从 GitHub 拉取 mihomo 最新版；只换用户目录里的二进制，不动 App 包</em></div>
+            <div class="env-control">
+              <span class="env-path" id="kernel-version">v—</span>
+              <button class="btn subtle small" id="btn-kernel-check" type="button"><span>检查更新</span></button>
+              <button class="btn primary small" id="btn-kernel-update" type="button" hidden><span>更新</span></button>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>TUN 栈</strong><em>gvisor 兼容性好，system 性能更好；改动会重启内核</em></div>
+            <div class="env-control">
+              <select class="env-input" id="env-tun-stack">
+                <option value="gvisor">gvisor</option>
+                <option value="system">system</option>
+                <option value="mixed">mixed</option>
+              </select>
+              <button class="btn subtle small" id="btn-kernel-save" type="button">保存</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card env-card">
+          <h2 class="env-title">权限</h2>
+          <div class="env-row">
+            <div class="env-label"><strong>免密接管网络</strong><em>启用一次后，改时区、切换系统代理、开关 TUN 都不再弹密码</em></div>
+            <div class="env-control env-actions">
+              <span class="env-value" id="env-sudo-state">—</span>
+              <button class="btn subtle small" id="btn-sudo" type="button"><span>启用</span></button>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>本地时区</strong><em>断开节点或退出时自动恢复到这个时区；每次改时区前会自动记录当前值</em></div>
+            <div class="env-control"><span class="env-value" id="env-local-tz">—</span></div>
+          </div>
+        </section>
+
+        <section class="card env-card">
+          <h2 class="env-title">维护</h2>
+          <div class="env-row">
+            <div class="env-label"><strong>菜单栏图标</strong><em>关闭后只保留 Dock 菜单</em></div>
+            <div class="env-control"><label class="check-inline"><input type="checkbox" id="env-menu-bar" /><span>显示</span></label></div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>应用更新</strong><em id="app-update-note">配置更新源后可检查新版本</em></div>
+            <div class="env-control"><button class="btn subtle small" id="btn-app-update" type="button"><span>检查更新</span></button></div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>巡检间隔</strong><em>守护模式下的自动检测周期（秒）</em></div>
+            <div class="env-control">
+              <input class="env-input" id="watch-interval" type="number" min="30" max="3600" step="10" />
+              <button class="btn subtle small" id="btn-save-interval" type="button"><span>保存</span></button>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>界面语言</strong><em>中文 / English（导航与页面标题）</em></div>
+            <div class="env-control">
+              <select class="env-input" id="env-lang" data-i18n-skip>
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>界面主题</strong><em>深色 / 浅色，或跟随 macOS 外观</em></div>
+            <div class="theme-cards" id="theme-seg">
+              <button class="theme-card" data-theme-mode="dark" type="button"><strong>深色</strong><em>始终使用深色</em></button>
+              <button class="theme-card" data-theme-mode="light" type="button"><strong>浅色</strong><em>始终使用浅色</em></button>
+              <button class="theme-card" data-theme-mode="auto" type="button"><strong>自动</strong><em>跟随 macOS 外观</em></button>
+            </div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>网络自检</strong><em>还原 DNS/代理、按当前设置重启内核</em></div>
+            <div class="env-control"><button class="btn subtle small" id="btn-repair-2" type="button">一键修复</button></div>
+          </div>
+          <div class="env-row">
+            <div class="env-label"><strong>数据目录</strong><em>订阅、内核配置、历史记录都放在这里</em></div>
+            <div class="env-control"><code class="env-path" id="env-data-dir">—</code></div>
+          </div>
+        </section>
+
+        <section class="card session-log-card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-clock"/></svg><span>本次会话</span></div>
+            <button class="btn subtle small" id="btn-restore" type="button">
+              <svg><use href="#i-power"/></svg><span>恢复临时设置</span>
+            </button>
+          </div>
+          <p class="session-log-note" id="session-log-note">接管代理、改时区、启停内核都会被记在这里。</p>
+          <ul class="session-log" id="session-log"></ul>
+        </section>
+      </section>
+
+      <section class="view" data-view="history" hidden>
+        <section class="card usage-card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-bolt"/></svg><span>用量统计</span></div>
+            <span class="nodes-meta" id="usage-meta">—</span>
+          </div>
+          <div class="usage-row">
+            <div class="usage-cell"><span>今日下行</span><strong id="usage-today-down">—</strong></div>
+            <div class="usage-cell"><span>今日上行</span><strong id="usage-today-up">—</strong></div>
+            <div class="usage-cell"><span>本月下行</span><strong id="usage-month-down">—</strong></div>
+            <div class="usage-cell"><span>本月上行</span><strong id="usage-month-up">—</strong></div>
+          </div>
+        </section>
+        <section class="card history-card">
+          <div class="nodes-head">
+            <div class="nodes-eyebrow"><svg><use href="#i-log"/></svg><span>运行记录</span><em id="history-meta"></em></div>
+            <button class="btn subtle small" id="btn-history-refresh" type="button"><svg><use href="#i-refresh"/></svg><span>刷新</span></button>
+          </div>
+          <div class="history-list" id="history-list"></div>
+        </section>
+      </section>
+    </main>
+
+<footer class="footer">
+  <div class="footer-meta" id="footer-meta">就绪 · 添加节点或订阅即可开始</div>
+  <div class="footer-actions">
+    <button class="btn subtle small" id="btn-restore-foot" type="button"><span>恢复临时设置</span></button>
+    <a class="btn subtle small" href="/api/report.json" download="claudenet-report.json">
+      <svg><use href="#i-download"/></svg><span>导出报告</span>
+    </a>
+    <button class="btn subtle small" id="btn-quit">
+      <svg><use href="#i-power"/></svg><span>退出</span>
+    </button>
+  </div>
+</footer>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="/i18n.js?v=__VER__"></script>
+<script src="/app.js?v=__VER__"></script>
+<div class="modal" id="modal" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true">
+    <h3 id="modal-title"></h3>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn subtle" id="modal-cancel" type="button">取消</button>
+      <button class="btn primary" id="modal-ok" type="button">确认</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
