@@ -1593,6 +1593,7 @@ function tzOffsetLabel(tz) {
 }
 
 function renderTz(tz) {
+  if (!$("tz-card")) return;
   const system = tz.system || state.tz.system || "";
   const exit = tz.exit || "";
   state.tz = { system, exit };
@@ -1653,6 +1654,7 @@ function fmtDuration(hours) {
 }
 
 function updateClocks() {
+  if (!$("tz-system-clock")) return;
   const sys = fmtClock(state.tz.system);
   const exit = fmtClock(state.tz.exit);
   $("tz-system-clock").textContent = sys.time;
@@ -3025,8 +3027,10 @@ function bindEvents() {
   for (const opt of document.querySelectorAll(".theme-card")) {
     opt.addEventListener("click", () => chooseTheme(opt.dataset.themeMode));
   }
-  $("btn-sync").addEventListener("click", () => syncTimezone(state.tz.exit));
-  $("btn-copy").addEventListener("click", copyCommand);
+  const syncBtn = $("btn-sync");
+  if (syncBtn) syncBtn.addEventListener("click", () => syncTimezone(state.tz.exit));
+  const copyBtn = $("btn-copy");
+  if (copyBtn) copyBtn.addEventListener("click", copyCommand);
   $("sub-form").addEventListener("submit", addSub);
   $("btn-sub-add").addEventListener("click", () => {
     const form = $("sub-form");
