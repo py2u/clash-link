@@ -506,6 +506,8 @@ def check_tls(ctx: ScanContext, spec: Spec) -> Check:
 
 def check_latency(ctx: ScanContext, spec: Spec) -> Check:
     started = time.monotonic()
+    # 先热身一次并丢弃：首次握手要建 DNS/连接池，会把样本整体拉偏
+    probe_tls("api.anthropic.com", proxy=ctx.proxy, timeout=8)
     samples: List[int] = []
     for _ in range(3):
         probe = probe_tls("api.anthropic.com", proxy=ctx.proxy, timeout=8)
@@ -529,9 +531,9 @@ def check_latency(ctx: ScanContext, spec: Spec) -> Check:
     median = samples[len(samples) // 2]
     jitter = samples[-1] - samples[0]
     data = {"samples": samples, "median_ms": median, "jitter_ms": jitter, "retried": retried}
-    if median < 1300 and jitter < 700:
+    if median < 1200 and jitter < 900:
         status, label = "pass", "流畅"
-    elif median < 2000:
+    elif median < 2400:
         status, label = "warn", "偏慢"
     else:
         status, label = "fail", "很慢"
@@ -542,7 +544,7 @@ def check_latency(ctx: ScanContext, spec: Spec) -> Check:
         f"{label} · 中位 {median} ms（抖动 {jitter} ms）",
         f"三次握手样本：{' / '.join(str(s) for s in samples)} ms（含 TCP+TLS，经代理）"
         + ("；其中 1 个尖峰已复测替换。" if retried else "。")
-        + "跨太平洋链路握手 700–1200 ms 属正常；超过 2000 ms 时 Claude 首字延迟会明显变慢。",
+        + "跨太平洋链路握手 700–1200 ms 属正常；超过 2400 ms 时 Claude 首字延迟会明显变慢。",
         data,
     )
 
