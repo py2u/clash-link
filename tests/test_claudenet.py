@@ -9,7 +9,6 @@ import os
 import tempfile
 import unittest
 
-os.environ.setdefault("CLASHLINK_DATA_DIR", tempfile.mkdtemp(prefix="clashlink-test-"))
 import urllib.request
 from pathlib import Path
 from unittest import mock
@@ -126,7 +125,7 @@ class VerdictTests(unittest.TestCase):
 class StoreTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
-        self.env = mock.patch.dict(os.environ, {"HOME": self.tmp.name})
+        self.env = mock.patch.dict(os.environ, {"HOME": self.tmp.name, "CLASHLINK_DATA_DIR": self.tmp.name})
         self.env.start()
 
     def tearDown(self) -> None:
@@ -159,7 +158,7 @@ class ServerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.tmp = tempfile.TemporaryDirectory()
-        cls.env = mock.patch.dict(os.environ, {"HOME": cls.tmp.name})
+        cls.env = mock.patch.dict(os.environ, {"HOME": cls.tmp.name, "CLASHLINK_DATA_DIR": cls.tmp.name})
         cls.env.start()
         cls.server = create_server("127.0.0.1", 0)
         cls.port = cls.server.server_address[1]
