@@ -1035,6 +1035,30 @@ function syncDeskNode() {
   if (group.now) select.value = group.now;
 }
 
+function compactSettings() {
+  const view = document.querySelector('.view[data-view="env"]');
+  if (!view || view.dataset.compacted === "1") return;
+  const cards = [...view.querySelectorAll(".env-card")];
+  const byTitle = (t) => cards.find((c) => (c.querySelector(".env-title") || {}).textContent?.trim().startsWith(t));
+  const netCard = byTitle("连接与客户端");
+  const tmpCard = byTitle("临时系统环境");
+  const dnsCard = byTitle("DNS");
+  const permCard = byTitle("权限");
+  const maintCard = byTitle("维护");
+  if (!netCard || !maintCard) return;
+  const body = (c) => c.querySelector(".env-body");
+  if (tmpCard && body(tmpCard)) { [...body(tmpCard).children].forEach((el) => body(netCard).appendChild(el)); tmpCard.remove(); }
+  if (dnsCard && body(dnsCard)) { [...body(dnsCard).children].forEach((el) => body(netCard).appendChild(el)); dnsCard.remove(); }
+  if (permCard && body(permCard)) { [...body(permCard).children].forEach((el) => body(maintCard).prepend(el)); permCard.remove(); }
+  const t1 = netCard.querySelector(".env-title");
+  if (t1) t1.firstChild.textContent = "网络与 DNS";
+  const t2 = maintCard.querySelector(".env-title");
+  if (t2) t2.firstChild.textContent = "权限与维护";
+  netCard.classList.remove("collapsed");
+  maintCard.classList.add("collapsed");
+  view.dataset.compacted = "1";
+}
+
 function setupEnvAccordions() {
   const cards = [...document.querySelectorAll('.view[data-view="env"] .env-card')];
   for (const card of cards) {
@@ -1054,6 +1078,7 @@ function setupEnvAccordions() {
     title.addEventListener("click", () => card.classList.toggle("collapsed"));
   }
   cards.forEach((card, i) => { if (i > 0) card.classList.add("collapsed"); });
+  compactSettings();
 }
 
 function renderEnv() {
