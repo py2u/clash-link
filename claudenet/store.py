@@ -67,6 +67,11 @@ _lock = threading.Lock()
 
 
 def data_dir() -> Path:
+    override = os.environ.get("CLASHLINK_DATA_DIR")
+    if override:
+        path = Path(override).expanduser()
+        path.mkdir(parents=True, exist_ok=True)
+        return path
     if os.uname().sysname == "Darwin":
         root = Path.home() / "Library" / "Application Support"
     else:

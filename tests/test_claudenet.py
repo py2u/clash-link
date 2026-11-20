@@ -5,7 +5,11 @@ import json
 import os
 import tempfile
 import threading
+import os
+import tempfile
 import unittest
+
+os.environ.setdefault("CLASHLINK_DATA_DIR", tempfile.mkdtemp(prefix="clashlink-test-"))
 import urllib.request
 from pathlib import Path
 from unittest import mock
