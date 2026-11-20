@@ -1673,3 +1673,4 @@ html, body, .app, .content {
     "Helvetica Neue", "Microsoft YaHei UI", sans-serif;
 }
 #page-title, .page-title h1, .page-head h1 { font-family: inherit !important; font-weight: 700 !important; }
+.env-row[hidden] { display: none !important; }

@@ -1070,6 +1070,7 @@ function renderEnv() {
   const set = (id, value) => { const el = $(id); if (el) el.value = value; };
   set("env-port", String(cfg.mixed_port || 7899));
   set("env-launch-mode", cfg.launch_mode || "desktop");
+  applyLaunchMode(cfg.launch_mode || "desktop");
   set("env-app-path", cfg.claude_app_path || "");
   set("env-cli-path", cfg.claude_cli_path || "");
   set("env-locale", cfg.locale || "zh-CN");
@@ -1295,6 +1296,13 @@ function renderHistory(items, error) {
     row.append(score, main, time);
     list.append(row);
   }
+}
+
+function applyLaunchMode(mode) {
+  const appRow = $("env-app-row");
+  const cliRow = $("env-cli-row");
+  if (appRow) appRow.hidden = mode !== "desktop";
+  if (cliRow) cliRow.hidden = mode !== "cli";
 }
 
 async function saveEnv() {
