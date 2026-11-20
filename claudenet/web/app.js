@@ -1308,9 +1308,9 @@ function applyLaunchMode(mode) {
 async function saveEnv() {
   const payload = {
     mixed_port: Number($("env-port").value || 7899),
-    launch_mode: $("env-launch-mode").value,
-    claude_app_path: $("env-app-path").value.trim(),
-    claude_cli_path: $("env-cli-path").value.trim(),
+    launch_mode: ($("env-launch-mode") || { value: "desktop" }).value,
+    claude_app_path: ($("env-app-path") ? $("env-app-path").value.trim() : ""),
+    claude_cli_path: ($("env-cli-path") ? $("env-cli-path").value.trim() : ""),
     locale: $("env-locale").value,
     browser: $("env-browser").value,
     disable_ipv6: $("env-ipv6").checked,
@@ -2956,8 +2956,6 @@ function bindEvents() {
   $("btn-scan").addEventListener("click", () => startScan());
   $("btn-browse").addEventListener("click", browseProject);
   $("btn-env-save").addEventListener("click", saveEnv);
-  $("btn-pick-app").addEventListener("click", () => pickFile("app", "env-app-path"));
-  $("btn-pick-cli").addEventListener("click", () => pickFile("file", "env-cli-path"));
   $("btn-restore-foot").addEventListener("click", restoreSession);
   const clientSel = $("desk-client");
   if (clientSel) clientSel.addEventListener("change", syncDeskClient);
